@@ -1,0 +1,23 @@
+# Pipeline stages are evaluated in order.
+# The first stage whose doubt_threshold is exceeded by the lead's current
+# doubt score is executed (provided the budget allows it).
+#
+# doubt score reference:
+#   1.0  – no observations at all
+#   0.7  – has title OR email, but not both
+#   0.3  – has title AND email, no conflict
+#   0.0  – fully resolved
+
+pipeline:
+
+  - stage: shallow
+    doubt_threshold: 0.5   # run if doubt > 0.5 (missing both fields)
+    cost: 2                # 2 cents
+
+  - stage: waterfall
+    doubt_threshold: 0.2   # run if shallow wasn't enough (still missing a field)
+    cost: 8                # 8 cents – tries up to 4 sources
+
+  - stage: agent
+    doubt_threshold: 0.1   # last resort deep-research pass
+    cost: 15               # 15 cents – expensive but thorough

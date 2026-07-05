@@ -1,0 +1,62 @@
+[package]
+name    = "leadintel-rs"
+version = "0.1.0"
+edition = "2021"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Binary entry point — `cargo run` or `cargo build` produces `leadintel`
+# In Python this was the `leadintel` package called via `python -m leadintel.storage.cli`
+# ─────────────────────────────────────────────────────────────────────────────
+[[bin]]
+name = "leadintel"
+path = "src/main.rs"
+
+[dependencies]
+
+# ── Async runtime ─────────────────────────────────────────────────────────────
+# tokio is Rust's most widely-used async runtime, equivalent to Python's asyncio.
+# "full" enables all features: multi-thread scheduler, timers, channels, I/O.
+tokio = { version = "1", features = ["full"] }
+
+# ── Redis ─────────────────────────────────────────────────────────────────────
+# The redis crate talks to Redis. "tokio-comp" adds async support so we can
+# use .await on Redis commands instead of blocking a thread.
+redis = { version = "0.25", features = ["tokio-comp"] }
+
+# ── Database ──────────────────────────────────────────────────────────────────
+# rusqlite is a safe Rust wrapper around libsqlite3.
+# "bundled" statically compiles libsqlite3 into the binary — no system install needed.
+# Equivalent to SQLAlchemy + sqlite3 driver on the Python side.
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+# ── Serialization ─────────────────────────────────────────────────────────────
+# serde is Rust's universal serialization framework.
+# "derive" lets you put #[derive(Serialize, Deserialize)] on structs automatically.
+serde      = { version = "1", features = ["derive"] }
+serde_json = "1"   # JSON  — used for job payloads stored in Redis hashes
+serde_yaml = "0.9" # YAML  — used to load pipeline.yaml
+
+# ── IDs and time ─────────────────────────────────────────────────────────────
+# uuid generates v4 (random) UUIDs, same as Python's uuid.uuid4()
+uuid = { version = "1", features = ["v4"] }
+# chrono provides DateTime<Utc>, equivalent to Python's datetime.datetime.utcnow()
+chrono = { version = "0.4", features = ["serde"] }
+
+# ── Randomness ────────────────────────────────────────────────────────────────
+# rand is used in the mock enrichment tasks — equivalent to Python's random module
+rand = "0.8"
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
+# clap turns a struct into a command-line interface.
+# "derive" lets you use #[derive(Parser)] on structs instead of writing arg parsers by hand.
+# Equivalent to Python's typer library.
+clap = { version = "4", features = ["derive"] }
+
+# ── Error handling ────────────────────────────────────────────────────────────
+# anyhow provides a flexible error type for application code.
+# It lets you use ? to propagate any error and .context("...") to add detail.
+# Equivalent to raising exceptions in Python — but explicit and composable.
+anyhow = "1"
+
+# CSV parsing — same role as Python's csv.DictReader
+csv = "1"
