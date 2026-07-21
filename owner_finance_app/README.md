@@ -1,6 +1,6 @@
 # Owner Finance Finder
 
-Scrapes Craigslist for owner-financed properties filtered by days on market.
+Scrapes sites for owner-financed properties filtered by days on market.
 Built with Rust + Axum. Frontend is vanilla HTML served by the same binary.
 
 ## Requirements
@@ -36,10 +36,10 @@ cargo run -- --db path/to/leadintel.db run
 
 ## Notes on data
 
-- Craigslist is the source. Listings typically expire after 30–45 days,
+- various sites is the source. Listings typically expire after 30–45 days,
   so the 60-day+ filter will often return few or no results — that's
   expected, not a bug. Those are the most motivated sellers when they
   do appear.
-- "Days on market" is calculated from the Craigslist post date, which
+- "Days on market" is calculated from the various sites post date, which
   is when the seller posted, not necessarily when the property hit MLS.
-- If Craigslist blocks the scraper (HTTP 403), try again in a few minutes.
+- If any site blocks the scraper (HTTP 403), try again in a few minutes.
